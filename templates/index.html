@@ -3,54 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego del Ahorcado - Partes de la Mainboard</title>
+    <title>Ahorcado de Componentes - U.E. Seis de Octubre</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="game-container">
-        <h1>Ahorcado de Componentes</h1>
+        <h1>Ahorcado de Componentes - U.E. Seis de Octubre</h1>
         
-        <!-- Dibujo animado SVG del ahorcado -->
+        <!-- Zona del Ahorcado visual -->
         <div class="hangman-box">
             <svg height="140" width="120" class="figure-container">
-                <line x1="10" y1="130" x2="100" y2="130" stroke="#2c3e50" stroke-width="4" />
-                <line x1="30" y1="15" x2="30" y2="130" stroke="#2c3e50" stroke-width="4" />
-                <line x1="30" y1="15" x2="80" y2="15" stroke="#2c3e50" stroke-width="4" />
-                <line x1="80" y1="15" x2="80" y2="35" stroke="#2c3e50" stroke-width="4" />
-
-                <!-- 1. Cabeza -->
-                <circle cx="80" cy="50" r="12" stroke="#2c3e50" stroke-width="3" fill="none" class="figure-part hidden" id="part-1" />
-                <!-- 2. Cuerpo -->
-                <line x1="80" y1="62" x2="80" y2="100" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-2" />
-                <!-- 3. Brazo izquierdo -->
-                <line x1="80" y1="72" x2="62" y2="90" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-3" />
-                <!-- 4. Brazo derecho -->
-                <line x1="80" y1="72" x2="98" y2="90" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-4" />
-                <!-- 5. Pierna izquierda -->
-                <line x1="80" y1="100" x2="65" y2="122" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-5" />
-                <!-- 6. Pierna derecha -->
-                <line x1="80" y1="100" x2="95" y2="122" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-6" />
+                <!-- Base horca -->
+                <line x1="10" y1="130" x2="100" y2="130" stroke="#1b4332" stroke-width="4" />
+                <line x1="30" y1="20" x2="30" y2="130" stroke="#1b4332" stroke-width="4" />
+                <line x1="30" y1="20" x2="80" y2="20" stroke="#1b4332" stroke-width="4" />
+                <line x1="80" y1="20" x2="80" y2="40" stroke="#1b4332" stroke-width="4" />
+                
+                <!-- Partes del cuerpo (se muestran según los errores) -->
+                <circle cx="80" cy="55" r="12" stroke="#2d6a4f" stroke-width="3" fill="none" class="figure-part" id="part-1" />
+                <line x1="80" y1="67" x2="80" y2="95" stroke="#2d6a4f" stroke-width="3" class="figure-part" id="part-2" />
+                <line x1="80" y1="75" x2="60" y2="88" stroke="#2d6a4f" stroke-width="3" class="figure-part" id="part-3" />
+                <line x1="80" y1="75" x2="100" y2="88" stroke="#2d6a4f" stroke-width="3" class="figure-part" id="part-4" />
+                <line x1="80" y1="95" x2="65" y2="120" stroke="#2d6a4f" stroke-width="3" class="figure-part" id="part-5" />
+                <line x1="80" y1="95" x2="95" y2="120" stroke="#2d6a4f" stroke-width="3" class="figure-part" id="part-6" />
             </svg>
         </div>
 
-        <div class="status-box">
-            <p>Intentos restantes: <span id="intentos">6</span></p>
+        <div class="info-text">Intentos restantes: <span id="intentos">6</span></div>
+
+        <!-- Pregunta Descriptiva del Componente -->
+        <div id="question-container" class="question-box">
+            Cargando pregunta...
         </div>
 
-        <!-- Contenedor para mostrar las pistas progresivas -->
-        <div class="hints-container">
-            <h3>Pistas:</h3>
-            <ul id="lista-pistas">
-                <li>Acumula errores para desbloquear pistas (Pista 1 a los 2 errores, Pista 2 a los 4 errores).</li>
-            </ul>
+        <!-- Contenedor de Pistas Dinámicas -->
+        <div id="hints-container" class="hints-container" style="display: none;">
+            <h3>Pistas Desbloqueadas:</h3>
+            <ul id="hints-list"></ul>
         </div>
 
-        <div id="palabra-display" class="word-display">_ _ _ _ _</div>
+        <!-- Palabra Oculta -->
+        <div id="palabra-display" class="word-display">_ _ _ _</div>
 
-        <div id="mensaje" class="message"></div>
+        <!-- Mensaje de estado (victoria/derrota) -->
+        <div id="message" class="message"></div>
 
-        <div id="teclado" class="keyboard"></div>
+        <!-- Teclado Virtual -->
+        <div id="keyboard" class="keyboard"></div>
 
+        <!-- Botón Reiniciar -->
         <button id="btn-reiniciar" onclick="reiniciarJuego()">Nuevo Juego</button>
     </div>
 

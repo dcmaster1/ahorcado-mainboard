@@ -1,78 +1,50 @@
-const ALFABETO = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("");
-
 document.addEventListener("DOMContentLoaded", () => {
-    crearTeclado();
-    actualizarEstado();
+    cargarEstado();
+    construirTeclado();
 });
 
-function crearTeclado() {
-    const contenedor = document.getElementById("teclado");
-    contenedor.innerHTML = "";
-    
-    ALFABETO.forEach(letra => {
-        const btn = document.createElement("button");
-        btn.innerText = letra;
-        btn.classList.add("key-btn");
-        btn.id = `key-${letra}`;
-        btn.onclick = () => enviarLetra(letra);
-        contenedor.appendChild(btn);
-    });
+function cargarEstado() {
+    fetch('/api/state')
+        .then(response => response.json())
+        .then(data => actualizarInterfaz(data));
 }
 
-async function actualizarEstado() {
-    const res = await fetch('/api/estado');
-    const data = await res.json();
-    renderizar(data);
-}
-
-async function enviarLetra(letra) {
-    const res = await fetch('/api/intentar', {
+function enviarLetra(letra) {
+    fetch('/api/guess', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ letra })
-    });
-    const data = await res.json();
-    renderizar(data);
+        body: JSON.stringify({ letter: letra })
+    })
+    .then(response => response.json())
+    .then(data => actualizarInterfaz(data));
 }
 
-async function reiniciarJuego() {
-    const res = await fetch('/api/reiniciar', { method: 'POST' });
-    const data = await res.json();
-    
-    ALFABETO.forEach(letra => {
-        const btn = document.getElementById(`key-${letra}`);
-        if (btn) btn.disabled = false;
-    });
-    
-    renderizar(data);
-}
-
-function renderizar(data) {
-    document.getElementById("palabra-display").innerText = data.palabra_oculta;
-    document.getElementById("intentos").innerText = data.intentos_restantes;
-
-    // Actualizar la lista de pistas visuales en pantalla
-    const listaPistas = document.getElementById("lista-pistas");
-    listaPistas.innerHTML = "";
-    
-    if (data.pistas.length === 0) {
-        const li = document.createElement("li");
-        li.innerText = "Acumula errores para desbloquear pistas (Pista 1 a los 2 errores, Pista 2 a los 4 errores).";
-        listaPistas.appendChild(li);
-    } else {
-        data.pistas.forEach((pista, index) => {
-            const li = document.createElement("li");
-            li.innerText = `Pista ${index + 1}: ${pista}`;
-            listaPistas.appendChild(li);
+function reiniciarJuego() {
+    fetch('/api/reset', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("message").innerText = "";
+            document.getElementById("message").className = "message";
+            actualizarInterfaz(data);
+            habilitarTeclado(true);
         });
-    }
+}
 
-    // Gestionar la animacion del monigote segun los errores cometidos
-    const errores = 6 - data.intentos_restantes;
+function actualizarInterfaz(data) {
+    // Mostrar la palabra oculta
+    document.getElementById("palabra-display").innerText = data.hidden_word;
+    
+    // Mostrar la pregunta descriptiva
+    document.getElementById("question-container").innerText = "Pregunta: " + data.question;
+
+    // Actualizar intentos restantes
+    document.getElementById("intentos").innerText = data.max_errors - data.errors;
+
+    // Actualizar partes del monigote según los errores (1 a 6)
     for (let i = 1; i <= 6; i++) {
         const parte = document.getElementById(`part-${i}`);
         if (parte) {
-            if (i <= errores) {
+            if (i <= data.errors) {
                 parte.classList.remove("hidden");
             } else {
                 parte.classList.add("hidden");
@@ -80,28 +52,72 @@ function renderizar(data) {
         }
     }
 
-    data.letras_usadas.forEach(letra => {
-        const btn = document.getElementById(`key-${letra}`);
-        if (btn) btn.disabled = true;
+    // Manejo de pistas
+    const hintsContainer = document.getElementById("hints-container");
+    const hintsList = document.getElementById("hints-list");
+    hintsList.innerHTML = "";
+    
+    if (data.hints.length > 0) {
+        hintsContainer.style.display = "block";
+        data.hints.forEach(hint => {
+            const li = document.createElement("li");
+            li.innerText = hint;
+            hintsList.appendChild(li);
+        });
+    } else {
+        hintsContainer.style.display = "none";
+    }
+
+    // Actualizar estado del teclado virtual
+    const botones = document.querySelectorAll(".key-btn");
+    botones.forEach(btn => {
+        const letra = btn.innerText;
+        if (data.guessed.includes(letra)) {
+            btn.disabled = true;
+        } else {
+            if (!data.won && !data.lost) {
+                btn.disabled = false;
+            }
+        }
     });
 
-    const msgDiv = document.getElementById("mensaje");
-    if (data.ganado) {
-        msgDiv.innerText = "Felicidades, ganaste el juego";
+    // Mensajes de fin de juego
+    const msgDiv = document.getElementById("message");
+    if (data.won) {
+        msgDiv.innerText = "¡Felicitaciones! Has adivinado el componente.";
         msgDiv.className = "message win";
-        deshabilitarTodoElTeclado();
-    } else if (data.perdido) {
-        msgDiv.innerText = `Perdiste. La respuesta era: ${data.palabra_revelada}`;
+        habilitarTeclado(false);
+    } else if (data.lost) {
+        msgDiv.innerText = `¡Juego Terminado! La respuesta era: ${data.word_to_reveal}`;
         msgDiv.className = "message lose";
-        deshabilitarTodoElTeclado();
-    } else {
-        msgDiv.innerText = "";
+        habilitarTeclado(false);
     }
 }
 
-function deshabilitarTodoElTeclado() {
-    ALFABETO.forEach(letra => {
-        const btn = document.getElementById(`key-${letra}`);
-        if (btn) btn.disabled = true;
+function construirTeclado() {
+    const tecladoDiv = document.getElementById("keyboard");
+    tecladoDiv.innerHTML = "";
+    const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    for (let letra of letras) {
+        const btn = document.createElement("button");
+        btn.innerText = letra;
+        btn.classList.add("key-btn");
+        btn.onclick = () => {
+            btn.disabled = true;
+            enviarLetra(letra);
+        };
+        tecladoDiv.appendChild(btn);
+    }
+}
+
+function habilitarTeclado(habilitar) {
+    const botones = document.querySelectorAll(".key-btn");
+    botones.forEach(btn => {
+        if (habilitar) {
+            btn.disabled = false;
+        } else {
+            btn.disabled = true;
+        }
     });
 }

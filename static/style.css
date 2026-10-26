@@ -14,52 +14,76 @@ body {
 }
 
 .game-container {
-    /* Efecto de vidrio moderno y elegante sobre el fondo */
-    background: rgba(255, 255, 255, 0.78);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    /* Efecto de vidrio moderno (Glassmorphism) con transparencia adecuada */
+    background: rgba(255, 255, 255, 0.84);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     
     padding: 25px 30px;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
     
     text-align: center;
-    max-width: 600px;
-    width: 90%;
+    max-width: 620px;
+    width: 92%;
 }
 
 .game-container h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     margin-top: 0;
-    margin-bottom: 12px;
-    color: #1b4332; /* Tono verde institucional oscuro para que combine perfectamente */
+    margin-bottom: 10px;
+    color: #1b4332; /* Verde institucional oscuro */
 }
 
 .hangman-box {
     display: flex;
     justify-content: center;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
+}
+
+.figure-part {
+    display: inline;
 }
 
 .figure-part.hidden {
     display: none;
 }
 
-.hints-container {
-    background: rgba(240, 244, 243, 0.85);
-    padding: 12px 16px;
-    border-radius: 10px;
+.info-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 8px;
+}
+
+/* Caja de la pregunta antes de la palabra */
+.question-box {
+    background: rgba(27, 67, 50, 0.08);
+    border-left: 5px solid #1b4332;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: #1b4332;
     margin: 12px 0;
     text-align: left;
-    font-size: 0.92rem;
+}
+
+.hints-container {
+    background: rgba(240, 244, 243, 0.9);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 10px 0;
+    text-align: left;
+    font-size: 0.9rem;
     color: #2c3e50;
     border-left: 5px solid #2d6a4f;
 }
 
 .hints-container h3 {
-    margin: 0 0 5px 0;
-    font-size: 0.98rem;
+    margin: 0 0 4px 0;
+    font-size: 0.92rem;
     color: #1b4332;
 }
 
@@ -69,9 +93,9 @@ body {
 }
 
 .word-display {
-    font-size: 2rem;
-    letter-spacing: 8px;
-    margin: 18px 0;
+    font-size: 2.2rem;
+    letter-spacing: 10px;
+    margin: 16px 0;
     font-weight: bold;
     color: #1b4332;
 }
@@ -85,7 +109,7 @@ body {
 }
 
 .key-btn {
-    padding: 9px 13px;
+    padding: 10px 14px;
     font-size: 0.95rem;
     font-weight: bold;
     border: none;
