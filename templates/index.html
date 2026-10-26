@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego del Ahorcado - Partes de la Mainboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="game-container">
+        <h1>Ahorcado de Componentes</h1>
+        
+        <!-- Dibujo animado SVG del ahorcado -->
+        <div class="hangman-box">
+            <svg height="140" width="120" class="figure-container">
+                <line x1="10" y1="130" x2="100" y2="130" stroke="#2c3e50" stroke-width="4" />
+                <line x1="30" y1="15" x2="30" y2="130" stroke="#2c3e50" stroke-width="4" />
+                <line x1="30" y1="15" x2="80" y2="15" stroke="#2c3e50" stroke-width="4" />
+                <line x1="80" y1="15" x2="80" y2="35" stroke="#2c3e50" stroke-width="4" />
+
+                <!-- 1. Cabeza -->
+                <circle cx="80" cy="50" r="12" stroke="#2c3e50" stroke-width="3" fill="none" class="figure-part hidden" id="part-1" />
+                <!-- 2. Cuerpo -->
+                <line x1="80" y1="62" x2="80" y2="100" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-2" />
+                <!-- 3. Brazo izquierdo -->
+                <line x1="80" y1="72" x2="62" y2="90" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-3" />
+                <!-- 4. Brazo derecho -->
+                <line x1="80" y1="72" x2="98" y2="90" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-4" />
+                <!-- 5. Pierna izquierda -->
+                <line x1="80" y1="100" x2="65" y2="122" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-5" />
+                <!-- 6. Pierna derecha -->
+                <line x1="80" y1="100" x2="95" y2="122" stroke="#2c3e50" stroke-width="3" class="figure-part hidden" id="part-6" />
+            </svg>
+        </div>
+
+        <div class="status-box">
+            <p>Intentos restantes: <span id="intentos">6</span></p>
+        </div>
+
+        <!-- Contenedor para mostrar las pistas progresivas -->
+        <div class="hints-container">
+            <h3>Pistas:</h3>
+            <ul id="lista-pistas">
+                <li>Acumula errores para desbloquear pistas (Pista 1 a los 2 errores, Pista 2 a los 4 errores).</li>
+            </ul>
+        </div>
+
+        <div id="palabra-display" class="word-display">_ _ _ _ _</div>
+
+        <div id="mensaje" class="message"></div>
+
+        <div id="teclado" class="keyboard"></div>
+
+        <button id="btn-reiniciar" onclick="reiniciarJuego()">Nuevo Juego</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
